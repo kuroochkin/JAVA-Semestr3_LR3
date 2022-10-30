@@ -31,10 +31,15 @@ public class Controller {
         while (true) {
             try {
                 i = Integer.parseInt(sc.next());
-                if(i <= 0) {System.out.println("Введите целое положительное число: ");}
+                if(i <= 0)
+                {
+                    System.out.println("Введите целое положительное число: ");
+                    Main.logger.warning("Был некорректный ввод.");
+                }
                 else {break;}
             } catch (NumberFormatException e) {
                 System.out.println("Ошибка! Введите целое число: ");
+                Main.logger.warning("Был некорректный ввод.");
             }
         }
         return i;
