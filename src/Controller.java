@@ -1,10 +1,13 @@
 import java.io.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Controller {
     public Model model;
     public View view;
     public Properties prop;
+
+
 
     public Controller(Model model, View view, Properties prop) {
         this.model = model;
@@ -22,7 +25,22 @@ public class Controller {
         return sc.nextInt();
     }
 
-    public Car AddObject(Model model) {
+    public static int CheckInt()  {
+        Scanner sc = new Scanner(System.in);
+        int i;
+        while (true) {
+            try {
+                i = Integer.parseInt(sc.next());
+                if(i <= 0) {System.out.println("Введите целое положительное число: ");}
+                else {break;}
+            } catch (NumberFormatException e) {
+                System.out.println("Ошибка! Введите целое число: ");
+            }
+        }
+        return i;
+    }
+
+    public Car AddObject(Model model) throws Exception {
         this.view.view("Введите марку машины: ");
         String brand = inputStr();
         this.view.view("Введите номер машины:");
@@ -30,7 +48,7 @@ public class Controller {
         this.view.view("Введите название радиостанции: ");
         String station = inputStr();
         this.view.view("Введите скорость машины: ");
-        int speed = inputInt();
+        int speed = CheckInt();
 
         Car car = new Car(brand, number, new Radio(station, true), speed);
         model.cars.add(car);
@@ -94,45 +112,66 @@ public class Controller {
         } catch (IOException e) {
             System.err.println("ОШИБКА: Файл свойств отсуствует!");
         }
-
     }
 
-    public void SwitchMenu() throws IOException {
+    public void SwitchMenu() throws Exception
+    {
 
         int key;
         do {
             this.view.PrintMenu();
             this.view.view("Введите номер меню: ");
-            key = inputInt();
+            key = CheckInt();
             switch (key) {
-                case 1 -> this.AddObject(this.model);
+                case 1 ->
+                {
+                    this.AddObject(this.model);
+                    Main.logger.info("Автомобиль был добавлен в программу.");
+                }
                 case 2 -> {
-                    if (this.model.cars.size() == 0) {
+                    if (this.model.cars.size() == 0)
+                    {
                         this.view.view("В программе нет ни одного автомобиля!");
+                        Main.logger.info("Была неудачная попытка удалить автомобиль из программы.");
                         break;
                     }
                     this.Remove(model);
+                    Main.logger.info("Автомобиль был удален из программы");
                 }
                 case 3 -> {
                     if (this.model.cars.size() == 0) {
                         this.view.view("В программе нет ни одного автомобиля!");
+                        Main.logger.info("Была неудачная попытка перезаписать файл.");
                         break;
                     }
                     this.SaveToFile("java.txt", false);
+                    Main.logger.info("Файл был перезаписан. Объекты добавлены в файл.");
                 }
                 case 4 -> {
                     if (this.model.cars.size() == 0) {
                         this.view.view("В программе нет ни одного автомобиля!");
+                        Main.logger.info("Была неудачная попытка дозаписать файл.");
                         break;
                     }
                     this.SaveToFile("java.txt", true);
+                    Main.logger.info("Файл был дозаписан. Объекты добавлены в файл.");
                 }
-                case 5 -> this.Reading();
-                case 6 -> this.view.view("Вы завершили выполнение программы.");
+                case 5 ->
+                {
+                    this.Reading();
+                    Main.logger.info("Произошло чтение из файла.");
+                }
+                case 6 ->
+                {
+                    this.view.view("Вы завершили выполнение программы.");
+                    Main.logger.info("Программа была завершена.");
+                }
                 default -> System.out.println("Вы ввели неверное значение меню...\n");
             }
         } while (key != 6);
     }
+
+
 }
 
 
