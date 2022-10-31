@@ -21,7 +21,6 @@ public class Car extends Transport
 
     public String toString()
     {
-        String str = "Марка машины: " + this.getBrand() + " Номер: " + this.getID() + " Текущее радио: " + this.getRadio().getStation() + " Скорость: " + this.getSpeed();
-        return str;
+        return "Марка машины: " + this.getBrand() + " Номер: " + this.getID() + " Текущее радио: " + this.getRadio().getStation() + " Скорость: " + this.getSpeed();
     }
 }

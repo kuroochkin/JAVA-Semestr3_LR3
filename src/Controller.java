@@ -61,11 +61,11 @@ public class Controller {
         return car;
     }
 
-    public void Remove(Model model)
-    {
+    public void Remove(Model model) throws IOException {
         this.view.view("Введите номер автомобиля, который хотите удалить: ");
         String number = inputStr();
         this.model.cars.removeIf(car -> number == car.getID());
+        this.SaveToFile("java.txt", false);
     }
 
     public void Reading()
@@ -78,6 +78,32 @@ public class Controller {
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void ReadingById(String id)
+    {
+        File file = new File("java.txt");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file)))
+        {
+            String line;
+            int count = 0;
+
+            while ((line = br.readLine()) != null)
+            {
+                int index = line.indexOf(id); // Ищем слово в строке
+                if(index != -1)
+                {
+                    System.out.println(line);
+                    count += 1;
+                }
+
+            }
+            if (count == 0) {System.out.println("В базе нет автомобился с таким номером!");}
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -168,12 +194,18 @@ public class Controller {
                 }
                 case 6 ->
                 {
+                    this.view.view("Введите номер автомобиля, который хотите вывести:");
+                    String number = inputStr();
+                    this.ReadingById(number);
+                }
+                case 7 ->
+                {
                     this.view.view("Вы завершили выполнение программы.");
                     Main.logger.info("Программа была завершена.");
                 }
                 default -> System.out.println("Вы ввели неверное значение меню...\n");
             }
-        } while (key != 6);
+        } while (key != 7);
     }
 
 
